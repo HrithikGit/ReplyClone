@@ -1,0 +1,6 @@
+{
+  "app": "npx ts-node bin/messaging-bot.ts",
+  "context": {
+    "aws-cdk:enableDiffNoFail": "true"
+  }
+}

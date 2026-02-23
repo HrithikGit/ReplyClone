@@ -1,0 +1,27 @@
+# Node
+node_modules/
+**/node_modules/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Env
+.env
+.env.*
+
+# Local storage
+app/local-storage.jsonl
+app/src/local-storage.jsonl
+app/local-queue.json
+app/local-storage.db
+
+# CDK
+infra/cdk.out/
+infra/.aws-synth
+
+# Misc
+.DS_Store
+.vscode/
