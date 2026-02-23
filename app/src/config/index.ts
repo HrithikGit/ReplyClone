@@ -21,7 +21,7 @@ export const config = {
   mode: (process.env.MODE ?? 'local') as 'local' | 'aws',
   enableWhatsAppSend: toBool(process.env.ENABLE_WHATSAPP_SEND, false),
   enableLlmLive: toBool(process.env.ENABLE_LLM_LIVE, false),
-  llmProvider: (process.env.LLM_PROVIDER ?? 'mock') as 'mock' | 'deepseek',
+  llmProvider: (process.env.LLM_PROVIDER ?? 'mock') as 'mock' | 'deepseek' | 'sarvam',
   awsRegion: process.env.AWS_REGION ?? 'us-east-1',
   whatsapp: {
     verifyToken: process.env.WHATSAPP_VERIFY_TOKEN ?? 'changeme',
@@ -41,6 +41,11 @@ export const config = {
     apiKey: process.env.DEEPSEEK_API_KEY ?? '',
     baseUrl: process.env.DEEPSEEK_BASE_URL ?? 'https://api.deepseek.com',
     model: process.env.DEEPSEEK_MODEL ?? 'deepseek-chat'
+  },
+  sarvam: {
+    apiKey: process.env.SARVAM_API_KEY ?? '',
+    baseUrl: process.env.SARVAM_BASE_URL ?? 'https://api.sarvam.ai',
+    model: process.env.SARVAM_MODEL ?? 'sarvam-m'
   },
   queueUrl: process.env.QUEUE_URL ?? '',
   tables: {

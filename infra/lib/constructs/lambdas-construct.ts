@@ -50,6 +50,9 @@ export class LambdasConstruct extends Construct {
         DEEPSEEK_API_KEY: props.secrets.secretValueFromJson('DEEPSEEK_API_KEY').unsafeUnwrap(),
         DEEPSEEK_BASE_URL: props.secrets.secretValueFromJson('DEEPSEEK_BASE_URL').unsafeUnwrap(),
         DEEPSEEK_MODEL: props.secrets.secretValueFromJson('DEEPSEEK_MODEL').unsafeUnwrap(),
+        SARVAM_API_KEY: props.secrets.secretValueFromJson('SARVAM_API_KEY').unsafeUnwrap(),
+        SARVAM_BASE_URL: props.secrets.secretValueFromJson('SARVAM_BASE_URL').unsafeUnwrap(),
+        SARVAM_MODEL: props.secrets.secretValueFromJson('SARVAM_MODEL').unsafeUnwrap(),
         MODE: 'aws'
       }
     });

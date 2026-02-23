@@ -17,7 +17,10 @@ export class SecretsConstruct extends Construct {
           DEEPSEEK_API_KEY: 'replace',
           DEEPSEEK_BASE_URL: 'https://api.deepseek.com',
           DEEPSEEK_MODEL: 'deepseek-chat',
-          LLM_PROVIDER: 'deepseek'
+          LLM_PROVIDER: 'deepseek',
+          SARVAM_API_KEY: 'replace',
+          SARVAM_BASE_URL: 'https://api.sarvam.ai',
+          SARVAM_MODEL: 'sarvam-m'
         }),
         generateStringKey: 'PLACEHOLDER'
       }

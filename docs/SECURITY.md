@@ -10,7 +10,7 @@
 - Never print secrets to logs; use masked secrets in workflows.
 
 ## AWS Secrets Manager
-- Store `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_VERIFY_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_BUSINESS_ACCOUNT_ID`, `ALLOWLIST_NUMBERS`, and `DEEPSEEK_API_KEY` there.
+- Store `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_VERIFY_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_BUSINESS_ACCOUNT_ID`, `ALLOWLIST_NUMBERS`, `DEEPSEEK_API_KEY`, and `SARVAM_API_KEY` there.
 - Grant `SecretsManagerReadWrite` minimal policies scoped to the secret ARN.
 - Rotate secrets every 90 days by updating the secret value and redeploying stacks.
 

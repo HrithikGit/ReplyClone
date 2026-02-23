@@ -49,3 +49,9 @@ ReplyClone is the **Reply Like Me** WhatsApp auto-reply engine. It ingests Whats
 2. Store `DEEPSEEK_API_KEY` in Secrets Manager (see SECURITY.md).
 3. Optional: override `DEEPSEEK_BASE_URL` and `DEEPSEEK_MODEL` in `.env` or secrets.
 4. Local mode always uses mock responses; no network calls are made.
+
+## Enabling Sarvam AI (AWS only)
+1. Set `ENABLE_LLM_LIVE=true` and `LLM_PROVIDER=sarvam`.
+2. Store `SARVAM_API_KEY` in Secrets Manager (see SECURITY.md).
+3. Optional: override `SARVAM_BASE_URL` and `SARVAM_MODEL` in `.env` or secrets.
+4. Local mode always uses mock responses; no network calls are made.

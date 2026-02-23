@@ -2,6 +2,7 @@ import {SQSEvent} from 'aws-lambda';
 import {ReplyJob, InboundMessage, LlmResponse} from '../core/types';
 import {mockReply} from '../adapters/llm/mock';
 import {deepseekReply} from '../adapters/llm/deepseek';
+import {sarvamReply} from '../adapters/llm/sarvam';
 import {allowlistCheck, sensitivityCheck, confidenceCheck, rateLimitCheck} from '../core/guardrails';
 import {formatReplyOutput} from '../core/formatter';
 import {loadRecentMessages, savePendingReply} from '../adapters/storage';
@@ -32,6 +33,8 @@ const processJob = async (job: ReplyJob) => {
   let llmResponse: LlmResponse;
   if (config.enableLlmLive && config.mode === 'aws' && config.llmProvider === 'deepseek') {
     llmResponse = await deepseekReply(job.inbound);
+  } else if (config.enableLlmLive && config.mode === 'aws' && config.llmProvider === 'sarvam') {
+    llmResponse = await sarvamReply(job.inbound);
   } else {
     llmResponse = mockReply(job.inbound);
   }
