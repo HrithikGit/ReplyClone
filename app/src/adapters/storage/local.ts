@@ -36,6 +36,24 @@ export const savePendingReply = async (job: ReplyJob, response: any) => {
   await writeLine({type: 'pending', job, response});
 };
 
+export const checkAndMarkIdempotency = async (messageId: string): Promise<boolean> => {
+  try {
+    const data = await fs.readFile(storagePath, 'utf8');
+    const exists = data
+      .trim()
+      .split('\n')
+      .map((line) => JSON.parse(line))
+      .some((item) => item.type === 'idempotency' && item.messageId === messageId);
+    if (exists) {
+      return false;
+    }
+  } catch {
+    // ignore missing file
+  }
+  await writeLine({type: 'idempotency', messageId, createdAt: Date.now()});
+  return true;
+};
+
 export const loadPendingReplies = async () => {
   try {
     const data = await fs.readFile(storagePath, 'utf8');

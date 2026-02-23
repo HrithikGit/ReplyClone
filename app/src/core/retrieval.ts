@@ -1,10 +1,9 @@
 import {VoiceMemorySnippet} from './types';
+import {embedText} from '../adapters/embeddings';
+import {vectorSearch} from '../adapters/vector';
+import {config} from '../config';
 
-const sampleMemories: VoiceMemorySnippet[] = [
-  {memoryId: '1', text: 'Always respond with playful Telugu flair.'},
-  {memoryId: '2', text: 'Some people need short replies with emoji.'}
-];
-
-export const retrieveVoiceMemory = (query: string, topK = 3): VoiceMemorySnippet[] => {
-  return sampleMemories.slice(0, topK);
+export const retrieveVoiceMemory = async (query: string, topK = config.retrievalTopK): Promise<VoiceMemorySnippet[]> => {
+  const vector = await embedText(query);
+  return vectorSearch(vector, topK);
 };

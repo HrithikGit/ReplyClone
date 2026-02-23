@@ -11,7 +11,13 @@ interface LambdasConstructProps {
   readonly messagesTableName: string;
   readonly pendingRepliesTableName: string;
   readonly contactsTableName: string;
+  readonly idempotencyTableName: string;
   readonly secrets: Secret;
+  readonly opensearchEndpoint?: string;
+  readonly opensearchIndex?: string;
+  readonly embeddingsProvider?: string;
+  readonly embeddingsModel?: string;
+  readonly embeddingsDim?: string;
 }
 
 export class LambdasConstruct extends Construct {
@@ -32,7 +38,10 @@ export class LambdasConstruct extends Construct {
       environment: {
         QUEUE_URL: props.queue.queueUrl,
         MODE: 'aws',
-        WHATSAPP_VERIFY_TOKEN: props.secrets.secretValueFromJson('WHATSAPP_VERIFY_TOKEN').unsafeUnwrap()
+        WHATSAPP_VERIFY_TOKEN: props.secrets.secretValueFromJson('WHATSAPP_VERIFY_TOKEN').unsafeUnwrap(),
+        META_APP_SECRET: props.secrets.secretValueFromJson('META_APP_SECRET').unsafeUnwrap(),
+        IDEMPOTENCY_TABLE: props.idempotencyTableName,
+        OPENSEARCH_ENDPOINT: props.opensearchEndpoint ?? ''
       }
     });
     this.replyWorker = new NodejsFunction(this, 'ReplyWorker', {
@@ -43,6 +52,7 @@ export class LambdasConstruct extends Construct {
         MESSAGES_TABLE: props.messagesTableName,
         PENDING_REPLIES_TABLE: props.pendingRepliesTableName,
         CONTACTS_TABLE: props.contactsTableName,
+        IDEMPOTENCY_TABLE: props.idempotencyTableName,
         WHATSAPP_ACCESS_TOKEN: props.secrets.secretValueFromJson('WHATSAPP_ACCESS_TOKEN').unsafeUnwrap(),
         WHATSAPP_PHONE_NUMBER_ID: props.secrets.secretValueFromJson('WHATSAPP_PHONE_NUMBER_ID').unsafeUnwrap(),
         WHATSAPP_BUSINESS_ACCOUNT_ID: props.secrets.secretValueFromJson('WHATSAPP_BUSINESS_ACCOUNT_ID').unsafeUnwrap(),
@@ -53,6 +63,13 @@ export class LambdasConstruct extends Construct {
         SARVAM_API_KEY: props.secrets.secretValueFromJson('SARVAM_API_KEY').unsafeUnwrap(),
         SARVAM_BASE_URL: props.secrets.secretValueFromJson('SARVAM_BASE_URL').unsafeUnwrap(),
         SARVAM_MODEL: props.secrets.secretValueFromJson('SARVAM_MODEL').unsafeUnwrap(),
+        META_APP_SECRET: props.secrets.secretValueFromJson('META_APP_SECRET').unsafeUnwrap(),
+        OPENSEARCH_ENDPOINT: props.opensearchEndpoint ?? '',
+        OPENSEARCH_INDEX: props.opensearchIndex ?? 'voice-memory',
+        ENABLE_EMBEDDINGS_LIVE: 'true',
+        EMBEDDINGS_PROVIDER: props.embeddingsProvider ?? 'bedrock',
+        EMBEDDINGS_MODEL: props.embeddingsModel ?? 'amazon.titan-embed-text-v2:0',
+        EMBEDDINGS_DIM: props.embeddingsDim ?? '1024',
         MODE: 'aws'
       }
     });

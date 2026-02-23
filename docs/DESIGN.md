@@ -19,7 +19,7 @@
 - **Rate limiting**: use last hour message count per sender; `RATE_LIMIT_PER_HOUR` default 3.
 - **Sensitive topics**: `guardrails.ts` uses keyword matching; if flagged, set `safety=hold`.
 - **Confidence threshold**: require `confidence >= 0.65` before sending; else hold.
-- **Idempotency**: each inbound message_id stored to skip duplicates.
+- **Idempotency**: each inbound `messageId` is recorded in a dedicated table to skip duplicates.
 
 ## Data Model
 - **ContactsTable**: `contactId`, `label` (friend/family/work), `lastReplyAt`.
@@ -33,3 +33,14 @@
 - **LLM adapters**: `mock`, `openai`, `bedrock`. Guardrails interact via shared response schema.
 - **Queue/storage**: pluggable interfaces to swap local vs AWS implementations.
 
+## RAG (Embeddings + OpenSearch)
+- **Embeddings**: AWS Bedrock Titan embeddings by default in AWS mode; mock embeddings locally.
+- **Vector store**: OpenSearch Serverless (VECTORSEARCH collection).
+- **Index mapping (required)**:
+  - `vector`: `knn_vector` with `dimension=EMBEDDINGS_DIM`
+  - `memoryId`, `text`, `tags`
+- **Flow**:
+  1) Build query from inbound text + recent context
+  2) Embed query
+  3) kNN search in OpenSearch
+  4) Inject top-K snippets into prompt

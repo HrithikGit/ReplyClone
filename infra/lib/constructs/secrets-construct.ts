@@ -14,6 +14,7 @@ export class SecretsConstruct extends Construct {
           WHATSAPP_ACCESS_TOKEN: 'replace',
           WHATSAPP_PHONE_NUMBER_ID: 'replace',
           WHATSAPP_BUSINESS_ACCOUNT_ID: 'replace',
+          META_APP_SECRET: 'replace',
           DEEPSEEK_API_KEY: 'replace',
           DEEPSEEK_BASE_URL: 'https://api.deepseek.com',
           DEEPSEEK_MODEL: 'deepseek-chat',

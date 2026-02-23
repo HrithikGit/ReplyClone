@@ -11,6 +11,7 @@ export class StorageConstruct extends Construct {
   public readonly messagesTable: Table;
   public readonly voiceMemoryTable: Table;
   public readonly pendingRepliesTable: Table;
+  public readonly idempotencyTable: Table;
 
   constructor(scope: Construct, id: string, props: StorageConstructProps) {
     super(scope, id);
@@ -36,6 +37,11 @@ export class StorageConstruct extends Construct {
       sortKey: {name: 'createdAt_messageId', type: AttributeType.STRING},
       billingMode: BillingMode.PAY_PER_REQUEST,
       tableName: `${props.prefix}-PendingReplies`
+    });
+    this.idempotencyTable = new Table(this, 'IdempotencyTable', {
+      partitionKey: {name: 'messageId', type: AttributeType.STRING},
+      billingMode: BillingMode.PAY_PER_REQUEST,
+      tableName: `${props.prefix}-Idempotency`
     });
   }
 }

@@ -1,15 +1,19 @@
 import axios from 'axios';
-import {InboundMessage, LlmResponse} from '../../core/types';
+import {InboundMessage, LlmResponse, VoiceMemorySnippet} from '../../core/types';
 import {config} from '../../config';
 import {createPrompt} from '../../core/prompt';
 
-export const sarvamReply = async (message: InboundMessage): Promise<LlmResponse> => {
+export const sarvamReply = async (
+  message: InboundMessage,
+  memory: VoiceMemorySnippet[] = [],
+  recent: InboundMessage[] = []
+): Promise<LlmResponse> => {
   if (!config.sarvam.apiKey) {
     throw new Error('SARVAM_API_KEY missing');
   }
   const url = `${config.sarvam.baseUrl}/v1/chat/completions`;
   const system = 'Return STRICT JSON only. Schema: {reply_primary, reply_backup, confidence, language_mix, safety}.';
-  const user = createPrompt(message);
+  const user = createPrompt(message, memory, recent);
 
   const response = await axios.post(
     url,

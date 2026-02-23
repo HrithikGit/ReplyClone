@@ -17,6 +17,7 @@ app/local-storage.jsonl
 app/src/local-storage.jsonl
 app/local-queue.json
 app/local-storage.db
+app/local-voice-memory.jsonl
 
 # CDK
 infra/cdk.out/

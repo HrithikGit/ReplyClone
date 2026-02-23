@@ -21,8 +21,10 @@ export const config = {
   mode: (process.env.MODE ?? 'local') as 'local' | 'aws',
   enableWhatsAppSend: toBool(process.env.ENABLE_WHATSAPP_SEND, false),
   enableLlmLive: toBool(process.env.ENABLE_LLM_LIVE, false),
+  enableEmbeddingsLive: toBool(process.env.ENABLE_EMBEDDINGS_LIVE, false),
   llmProvider: (process.env.LLM_PROVIDER ?? 'mock') as 'mock' | 'deepseek' | 'sarvam',
   awsRegion: process.env.AWS_REGION ?? 'us-east-1',
+  metaAppSecret: process.env.META_APP_SECRET ?? '',
   whatsapp: {
     verifyToken: process.env.WHATSAPP_VERIFY_TOKEN ?? 'changeme',
     accessToken: process.env.WHATSAPP_ACCESS_TOKEN ?? 'changeme',
@@ -42,6 +44,15 @@ export const config = {
     baseUrl: process.env.DEEPSEEK_BASE_URL ?? 'https://api.deepseek.com',
     model: process.env.DEEPSEEK_MODEL ?? 'deepseek-chat'
   },
+  embeddings: {
+    provider: (process.env.EMBEDDINGS_PROVIDER ?? 'mock') as 'mock' | 'bedrock',
+    model: process.env.EMBEDDINGS_MODEL ?? 'amazon.titan-embed-text-v2:0',
+    dimensions: parseNumber(process.env.EMBEDDINGS_DIM, 1024)
+  },
+  opensearch: {
+    endpoint: process.env.OPENSEARCH_ENDPOINT ?? '',
+    index: process.env.OPENSEARCH_INDEX ?? 'voice-memory'
+  },
   sarvam: {
     apiKey: process.env.SARVAM_API_KEY ?? '',
     baseUrl: process.env.SARVAM_BASE_URL ?? 'https://api.sarvam.ai',
@@ -52,6 +63,7 @@ export const config = {
     contactsTable: process.env.CONTACTS_TABLE ?? '',
     messagesTable: process.env.MESSAGES_TABLE ?? '',
     voiceMemoryTable: process.env.VOICE_MEMORY_TABLE ?? '',
-    pendingRepliesTable: process.env.PENDING_REPLIES_TABLE ?? ''
+    pendingRepliesTable: process.env.PENDING_REPLIES_TABLE ?? '',
+    idempotencyTable: process.env.IDEMPOTENCY_TABLE ?? ''
   }
 };

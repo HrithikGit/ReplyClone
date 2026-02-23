@@ -1,7 +1,7 @@
 import {APIGatewayProxyEventV2, APIGatewayProxyResultV2} from 'aws-lambda';
 import {normalizePayload, verifyChallenge} from '../adapters/messaging/whatsapp/webhook';
 import {config} from '../config';
-import {saveMessage} from '../adapters/storage';
+import {saveMessage, checkAndMarkIdempotency} from '../adapters/storage';
 import {enqueueJob} from '../adapters/queue';
 import {ReplyJob} from '../core/types';
 import {v4 as uuidv4} from 'uuid';
@@ -13,14 +13,19 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
   if (challenge) {
     return {statusCode: 200, body: challenge};
   }
-  if (event.headers?.['x-hub-signature'] && !verifySignature(event.headers as Record<string, string>)) {
+  const rawBody = event.body ?? '';
+  if (!verifySignature(event.headers as Record<string, string>, rawBody, config.metaAppSecret)) {
     return {statusCode: 401, body: 'invalid signature'};
   }
-  const body = event.body ? JSON.parse(event.body) : {};
+  const body = rawBody ? JSON.parse(rawBody) : {};
   const messages = normalizePayload(body);
   const correlationId = uuidv4();
   await Promise.all(
     messages.map(async (message) => {
+      const fresh = await checkAndMarkIdempotency(message.messageId);
+      if (!fresh) {
+        return;
+      }
       await saveMessage(message);
       const job: ReplyJob = {inbound: message, correlationId};
       await enqueueJob(job);

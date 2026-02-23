@@ -63,6 +63,27 @@ export const savePendingReply = async (job: ReplyJob, response: unknown) => {
   );
 };
 
+export const checkAndMarkIdempotency = async (messageId: string): Promise<boolean> => {
+  if (!config.tables.idempotencyTable) {
+    throw new Error('IDEMPOTENCY_TABLE missing in aws mode');
+  }
+  try {
+    await dynamoClient.send(
+      new PutCommand({
+        TableName: config.tables.idempotencyTable,
+        Item: {messageId, createdAt: Date.now()},
+        ConditionExpression: 'attribute_not_exists(messageId)'
+      })
+    );
+    return true;
+  } catch (error: any) {
+    if (error?.name === 'ConditionalCheckFailedException') {
+      return false;
+    }
+    throw error;
+  }
+};
+
 export const loadPendingReplies = async () => {
   const result = await dynamoClient.send(new ScanCommand({TableName: config.tables.pendingRepliesTable}));
   return result.Items ?? [];

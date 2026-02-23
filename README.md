@@ -37,6 +37,7 @@ ReplyClone is the **Reply Like Me** WhatsApp auto-reply engine. It ingests Whats
 1. Deploy in AWS mode with `ENABLE_WHATSAPP_SEND=true` *and* valid secrets stored in Secrets Manager (see SECURITY.md).
 2. Without both the flag and secrets, outbound messages remain mocked.
 3. Never commit `.env` or secrets; share via Secrets Manager.
+4. Set `META_APP_SECRET` for signature verification.
 
 ## Cost & Safety Notes
 - Local mode does not call AWS or WhatsApp; zero billing by default.
@@ -55,3 +56,22 @@ ReplyClone is the **Reply Like Me** WhatsApp auto-reply engine. It ingests Whats
 2. Store `SARVAM_API_KEY` in Secrets Manager (see SECURITY.md).
 3. Optional: override `SARVAM_BASE_URL` and `SARVAM_MODEL` in `.env` or secrets.
 4. Local mode always uses mock responses; no network calls are made.
+
+## Enabling RAG (Embeddings + OpenSearch)
+1. Deploy the stack to create the OpenSearch Serverless collection.
+2. Create the vector index with mapping:
+```json
+{
+  "settings": {"index": {"knn": true}},
+  "mappings": {
+    "properties": {
+      "vector": {"type": "knn_vector", "dimension": 1024},
+      "memoryId": {"type": "keyword"},
+      "text": {"type": "text"},
+      "tags": {"type": "keyword"}
+    }
+  }
+}
+```
+3. Set env vars: `ENABLE_EMBEDDINGS_LIVE=true`, `EMBEDDINGS_PROVIDER=bedrock`, `OPENSEARCH_ENDPOINT`, `OPENSEARCH_INDEX`.
+4. Ingest voice memory snippets via your own ingestion script or API.

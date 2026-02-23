@@ -8,6 +8,7 @@ import {formatReplyOutput} from '../core/formatter';
 import {loadRecentMessages, savePendingReply} from '../adapters/storage';
 import {sendReply} from '../adapters/messaging/whatsapp/client';
 import {config} from '../config';
+import {retrieveVoiceMemory} from '../core/retrieval';
 
 const loadContext = async (message: InboundMessage) => {
   return loadRecentMessages(config.contextLastN, message.senderId);
@@ -25,6 +26,8 @@ const processJob = async (job: ReplyJob) => {
     return;
   }
   const context = await loadContext(job.inbound);
+  const query = [job.inbound.text, ...context.map((m) => m.text)].join(' ');
+  const memory = await retrieveVoiceMemory(query, config.retrievalTopK);
   const rateOutcome = rateLimitCheck(context);
   if (rateOutcome.decision === 'hold') {
     await savePendingReply(job, {reason: rateOutcome.reason});
@@ -32,11 +35,11 @@ const processJob = async (job: ReplyJob) => {
   }
   let llmResponse: LlmResponse;
   if (config.enableLlmLive && config.mode === 'aws' && config.llmProvider === 'deepseek') {
-    llmResponse = await deepseekReply(job.inbound);
+    llmResponse = await deepseekReply(job.inbound, memory, context);
   } else if (config.enableLlmLive && config.mode === 'aws' && config.llmProvider === 'sarvam') {
-    llmResponse = await sarvamReply(job.inbound);
+    llmResponse = await sarvamReply(job.inbound, memory, context);
   } else {
-    llmResponse = mockReply(job.inbound);
+    llmResponse = mockReply(job.inbound, memory);
   }
   const formatted = formatReplyOutput(llmResponse);
   const confidenceOutcome = confidenceCheck(formatted.confidence);

@@ -17,7 +17,7 @@ export class ApiConstruct extends Construct {
     });
     this.api.addRoutes({
       path: '/webhook/whatsapp',
-      methods: [HttpMethod.POST],
+      methods: [HttpMethod.POST, HttpMethod.GET],
       integration: new HttpLambdaIntegration('WebhookIntegration', props.webhookHandler)
     });
   }

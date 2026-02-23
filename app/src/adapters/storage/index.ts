@@ -24,6 +24,13 @@ export const savePendingReply = (job: ReplyJob, response: unknown) => {
   return local.savePendingReply(job, response);
 };
 
+export const checkAndMarkIdempotency = (messageId: string) => {
+  if (config.mode === 'aws') {
+    return dynamo.checkAndMarkIdempotency(messageId);
+  }
+  return local.checkAndMarkIdempotency(messageId);
+};
+
 export const loadPendingReplies = () => {
   if (config.mode === 'aws') {
     return dynamo.loadPendingReplies();
